@@ -1,0 +1,63 @@
+name: omada-controller
+
+x-hosts:
+  omada: &host-omada omada.${BASE_DOMAIN:?BASE_DOMAIN is required}
+
+services:
+  omada-controller:
+    image: mbentley/omada-controller:${OMADA_VERSION:?OMADA_VERSION is required}
+    restart: unless-stopped
+    stop_grace_period: 60s
+    expose:
+      - "8088"
+    ports:
+      # Device discovery/adoption ports cannot go through the HTTP reverse
+      # proxy; they are published directly (documented exception to rule 4,
+      # see README.md). Management UI itself is proxy-only (no 8088/8043
+      # mapping here — reached via VIRTUAL_HOST below).
+      - "${MANAGE_HTTP_PORT:?MANAGE_HTTP_PORT is required}:8088"
+      - "${MANAGE_HTTPS_PORT:?MANAGE_HTTPS_PORT is required}:8043"
+      - "8843:8843"
+      - "29810:29810/udp"
+      - "29811:29811"
+      - "29812:29812"
+      - "29813:29813"
+      - "29814:29814"
+      - "27001:27001/udp"
+    environment:
+      PUID: ${PUID:?PUID is required}
+      PGID: ${PGID:?PGID is required}
+      TZ: ${TZ:?TZ is required}
+      MANAGE_HTTP_PORT: ${MANAGE_HTTP_PORT:?MANAGE_HTTP_PORT is required}
+      MANAGE_HTTPS_PORT: ${MANAGE_HTTPS_PORT:?MANAGE_HTTPS_PORT is required}
+      PORTAL_HTTP_PORT: ${PORTAL_HTTP_PORT:?PORTAL_HTTP_PORT is required}
+      PORTAL_HTTPS_PORT: ${PORTAL_HTTPS_PORT:?PORTAL_HTTPS_PORT is required}
+      SHOW_SERVER_LOGS: ${SHOW_SERVER_LOGS:-false}
+      SHOW_MONGODB_LOGS: ${SHOW_MONGODB_LOGS:-false}
+      VIRTUAL_HOST: *host-omada
+      VIRTUAL_PORT: "8088"
+      ACME_HOST: *host-omada
+      GEN_SELF_SIGNED_CERT: ${OMADA_GEN_SELF_SIGNED_CERT:-true}
+    volumes:
+      - omada-data:/opt/tplink/EAPController/data
+      - omada-logs:/opt/tplink/EAPController/logs
+      - omada-work:/opt/tplink/EAPController/work
+    networks:
+      - proxy
+      - default
+    labels:
+      homepage.group: Network
+      homepage.name: Omada Controller
+      homepage.icon: omada
+      homepage.href: https://omada.${BASE_DOMAIN:?BASE_DOMAIN is required}
+      homepage.description: TP-Link Omada SDN controller — manage APs, switches and gateways.
+
+networks:
+  proxy:
+    name: ${NGINX_PROXY_NETWORK:-web-proxy}
+    external: true
+
+volumes:
+  omada-data:
+  omada-logs:
+  omada-work:
