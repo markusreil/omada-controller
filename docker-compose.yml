@@ -10,19 +10,25 @@ services:
     stop_grace_period: 60s
     expose:
       - "8088"
+      - "8043"
     ports:
-      # Device discovery/adoption ports cannot go through the HTTP reverse
-      # proxy; they are published directly (documented exception to rule 4,
-      # see README.md). Management UI itself is proxy-only (no 8088/8043
-      # mapping here — reached via VIRTUAL_HOST below).
+      # Raw TCP/UDP device traffic cannot go through the HTTP reverse proxy
+      # and is published directly (documented exception to rule 4, see
+      # README.md). Port 8088 doubles as the device inform port, so it stays
+      # published. The controller's own HTTPS port (8043) is deliberately NOT
+      # published: browser UI goes through the proxy (VIRTUAL_HOST below),
+      # which terminates client TLS and re-encrypts to the backend
+      # (VIRTUAL_PORT 8043 + VIRTUAL_PROTO https).
       - "${MANAGE_HTTP_PORT:?MANAGE_HTTP_PORT is required}:8088"
-      - "${MANAGE_HTTPS_PORT:?MANAGE_HTTPS_PORT is required}:8043"
       - "8843:8843"
       - "29810:29810/udp"
       - "29811:29811"
       - "29812:29812"
       - "29813:29813"
       - "29814:29814"
+      - "29815:29815"
+      - "29816:29816"
+      - "29817:29817"
       - "27001:27001/udp"
     environment:
       PUID: ${PUID:?PUID is required}
@@ -35,7 +41,8 @@ services:
       SHOW_SERVER_LOGS: ${SHOW_SERVER_LOGS:-false}
       SHOW_MONGODB_LOGS: ${SHOW_MONGODB_LOGS:-false}
       VIRTUAL_HOST: *host-omada
-      VIRTUAL_PORT: "8088"
+      VIRTUAL_PORT: "8043"
+      VIRTUAL_PROTO: "https"
       ACME_HOST: *host-omada
       GEN_SELF_SIGNED_CERT: ${OMADA_GEN_SELF_SIGNED_CERT:-true}
     volumes:
