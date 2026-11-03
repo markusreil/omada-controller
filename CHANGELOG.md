@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Default `SHOW_SERVER_LOGS` to `true` so the controller log is in `docker compose logs`.
 - Published port 8044 (dedicated HTTPS upgrade port for ES-series switches); remote firmware downloads failed without it.
 - Re-published port 8043: non-ES device families (EAPs) download firmware over the management HTTPS port (it tracks `MANAGE_HTTPS_PORT`), so unpublishing it broke AP upgrades while switches worked.
+- README: full device-port table with per-family firmware roles, firmware-upgrade section (controller-hosted downloads, post-restart wait), adoption and credential notes.
 
 ### Deprecated
 
