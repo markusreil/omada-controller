@@ -51,6 +51,7 @@ services:
       GEN_SELF_SIGNED_CERT: ${OMADA_GEN_SELF_SIGNED_CERT:-true}
     volumes:
       - omada-data:/opt/tplink/EAPController/data
+      - omada-backup:/opt/tplink/EAPController/data/backup
       - omada-logs:/opt/tplink/EAPController/logs
       - omada-work:/opt/tplink/EAPController/work
     networks:
@@ -70,5 +71,6 @@ networks:
 
 volumes:
   omada-data:
+  omada-backup:
   omada-logs:
   omada-work:

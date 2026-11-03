@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `omada-backup` named volume for `data/backup` so controller backups survive data volume resets.
 - Initial omada-controller compose project (LAN/self-signed variant, upstream `mbentley/omada-controller` image).
 
 ### Changed

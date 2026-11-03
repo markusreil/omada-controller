@@ -12,7 +12,7 @@ build — the upstream image *is* the service.
   adoption). Management UI is reached through the proxy at
   `omada.<BASE_DOMAIN>`; device discovery/adoption ports are published
   directly on the host (see below).
-- Volumes: `omada-data`, `omada-logs`, `omada-work` (named volumes; state
+- Volumes: `omada-data`, `omada-backup` (`data/backup`), `omada-logs`, `omada-work` (named volumes; state
   survives restarts and rebuilds).
 - Network: joins the proxy's external network (`NGINX_PROXY_NETWORK`,
   default `web-proxy`), which must exist before startup.
