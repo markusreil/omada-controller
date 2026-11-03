@@ -14,13 +14,15 @@ services:
     ports:
       # Device-facing traffic cannot go through the HTTP reverse proxy and is
       # published directly (documented exception to rule 4, see README.md).
-      # Port 8088 doubles as the device inform port, so it stays published;
-      # 8044 is the controller's dedicated HTTPS upgrade port for ES-series
-      # switches. The controller's own HTTPS port (8043) is deliberately NOT
-      # published: browser UI goes through the proxy (VIRTUAL_HOST below),
-      # which terminates client TLS and re-encrypts to the backend
-      # (VIRTUAL_PORT 8043 + VIRTUAL_PROTO https).
+      # Port 8088 doubles as the device inform port; 8044 is the dedicated
+      # HTTPS upgrade port for ES-series switches; 8043 (management HTTPS)
+      # doubles as the firmware download port for all other device families
+      # (EAPs etc. — it tracks MANAGE_HTTPS_PORT). Browser UI still goes
+      # through the proxy (VIRTUAL_HOST below), which terminates client TLS
+      # and re-encrypts to the backend (VIRTUAL_PORT 8043 + VIRTUAL_PROTO
+      # https); direct hits on :8043 just show the controller's own cert.
       - "${MANAGE_HTTP_PORT:?MANAGE_HTTP_PORT is required}:8088"
+      - "${MANAGE_HTTPS_PORT:?MANAGE_HTTPS_PORT is required}:8043"
       - "8843:8843"
       - "29810:29810/udp"
       - "29811:29811"
