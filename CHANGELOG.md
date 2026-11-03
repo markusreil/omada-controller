@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Published the remaining device ports 29815–29817 (device info, remote terminal, device monitor).
 - Default `OMADA_VERSION` changed from `latest` to `6.3` (maintainer deprecates `latest`, which still points at v5).
 - Default `SHOW_SERVER_LOGS` to `true` so the controller log is in `docker compose logs`.
+- Published port 8044 (dedicated HTTPS upgrade port for ES-series switches); remote firmware downloads failed without it.
 
 ### Deprecated
 

@@ -12,10 +12,11 @@ services:
       - "8088"
       - "8043"
     ports:
-      # Raw TCP/UDP device traffic cannot go through the HTTP reverse proxy
-      # and is published directly (documented exception to rule 4, see
-      # README.md). Port 8088 doubles as the device inform port, so it stays
-      # published. The controller's own HTTPS port (8043) is deliberately NOT
+      # Device-facing traffic cannot go through the HTTP reverse proxy and is
+      # published directly (documented exception to rule 4, see README.md).
+      # Port 8088 doubles as the device inform port, so it stays published;
+      # 8044 is the controller's dedicated HTTPS upgrade port for ES-series
+      # switches. The controller's own HTTPS port (8043) is deliberately NOT
       # published: browser UI goes through the proxy (VIRTUAL_HOST below),
       # which terminates client TLS and re-encrypts to the backend
       # (VIRTUAL_PORT 8043 + VIRTUAL_PROTO https).
@@ -30,6 +31,7 @@ services:
       - "29816:29816"
       - "29817:29817"
       - "27001:27001/udp"
+      - "8044:8044"
     environment:
       PUID: ${PUID:?PUID is required}
       PGID: ${PGID:?PGID is required}
